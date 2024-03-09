@@ -17,5 +17,5 @@ jobs:
         name: Install dependencies
         run: bash .github/scripts/install-dependencies.sh
       -
-        name: Build videos
+        name: Build gifs
         run: bash .github/scripts/build-videos.sh
