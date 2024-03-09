@@ -6,7 +6,7 @@ on:
       - 'main'
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       -
@@ -16,3 +16,6 @@ jobs:
       -
         name: Install dependencies
         run: bash .github/scripts/install-dependencies.sh
+      -
+        name: Build videos
+        run: manim -pql completing-the-square/source.py CreateCircle
