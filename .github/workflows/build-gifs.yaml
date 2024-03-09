@@ -18,5 +18,4 @@ jobs:
         run: bash .github/scripts/install-dependencies.sh
       -
         name: Build videos
-        # run: manim -pql completing-the-square/source.py CreateCircle
         run: bash .github/scripts/build-videos.sh

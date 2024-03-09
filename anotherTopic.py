@@ -1,6 +1,6 @@
 from manim import *
 
-class CreateCircle(Scene):
+class Source(Scene):
     def construct(self):
         l1 = Line(LEFT, RIGHT)
         self.add(l1)
