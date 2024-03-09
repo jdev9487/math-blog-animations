@@ -1,9 +1,9 @@
 name: Build Gifs from Python
 
-on:
+on: 
   push:
-    branches:
-      - 'main'
+    tags:
+    - '*'
 
 jobs:
   build:
@@ -19,3 +19,8 @@ jobs:
       -
         name: Build gifs
         run: bash .github/scripts/build-videos.sh
+      -
+        name: Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "*.gif"
