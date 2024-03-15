@@ -9,4 +9,4 @@ do
 done
 rm -rf media
 
-node_modules/cloudconvert-cli/lib/cli.js convert -f gif output/*.mp4
+node_modules/cloudconvert-cli/lib/cli.js convert -f gif --outputdir=output/ output/*.mp4
