@@ -23,10 +23,7 @@ jobs:
         name: Install dependencies
         run: bash .github/scripts/install-dependencies.sh
       -
-        name: Build gifs
-        run: bash .github/scripts/build-videos.sh ${{ secrets.CLOUDCONVERT_API_KEY }}
-      -
         name: Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "output/*.gif"
+          artifacts: "output/*.mp4"
