@@ -36,7 +36,7 @@ class Source(MovingCameraScene):
         self.play(Create(c), Write(c_area_text))
         self.play(Wiggle(c_area_text, scale_value=1.4), Wiggle(altered_initial_equation[4], scale_value=1.4))
         self.wait(3)
-        self.play(Unwrite(altered_initial_equation))
+        self.play(Unwrite(altered_initial_equation), self.camera.frame.animate.move_to([X_SQUARED_LENGTH/2, X_SQUARED_LENGTH/2, 0]))
         self.wait()
         self.play(Uncreate(rect_initial),
                   Unwrite(rect_initial_width_text),
@@ -90,14 +90,15 @@ class Source(MovingCameraScene):
                   .shift(UP*(final[0][0].get_y() - completed_area_text.get_y())),
                   adjusted_c_area_text.animate
                   .shift(RIGHT*(final[0][2].get_x() - adjusted_c_area_text.get_x()))
-                  .shift(UP*(final[0][2].get_y() - adjusted_c_area_text.get_y())))
+                  .shift(UP*(final[0][2].get_y() - adjusted_c_area_text.get_y())),
+                  self.camera.frame.animate.move_to(final[0]))
         self.play(Write(final[0][1]), Write(final[0][3]))
+        self.wait()
         self.play(Write(final[1]),
                   self.camera.frame.animate.move_to(final[1]))
+        self.wait()
         self.play(Write(final[2]),
                   self.camera.frame.animate.move_to(final[2]))
-        self.play(Write(final[3]),
-                  self.camera.frame.animate.move_to(final[3]))
         self.wait(3)
     
 def createXSquaredObjects():
@@ -169,7 +170,6 @@ def createFinalEquations():
     one = MathTex('\\left(x + \\frac{b}{2a}\\right)^2', '+', '\\frac{c}{a}-\\frac{b^2}{4a^2}}', '=0', color=YELLOW)
     one[0].set_color(PURPLE)
     one[2].set_color(BLUE)
-    two = MathTex('\\left(x + \\frac{b}{2a}\\right)^2', '=', '\\frac{b^2-4ac}{4a^2}}', color=YELLOW).shift(DOWN*1.5)
-    three = MathTex('x + \\frac{b}{2a}', '=', '\\frac{\\pm\\sqrt{b^2-4ac}}{2a}}', color=YELLOW).shift(DOWN*3)
-    four = MathTex('x', '=', '\\frac{-b \\pm \\sqrt{b^2-4ac}}{2a}}', color=YELLOW).shift(DOWN*4.5)
-    return (one, two, three, four)
+    two = MathTex('\\vdots').shift(DOWN*1.5)
+    three = MathTex('x', '=', '\\frac{-b \\pm \\sqrt{b^2-4ac}}{2a}}', color=YELLOW).shift(DOWN*3)
+    return (one, two, three)
