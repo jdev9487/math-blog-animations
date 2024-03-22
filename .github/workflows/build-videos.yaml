@@ -1,4 +1,4 @@
-name: Build Gifs from Python
+name: Build videos from Python
 
 on: 
   push:
