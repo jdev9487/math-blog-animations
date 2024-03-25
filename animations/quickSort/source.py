@@ -1,4 +1,5 @@
 from manim import *
+import numpy as np
 
 LIST = [3, 1, 7, 2, 10, 6, 5, 4, 9, 8]
 
@@ -6,6 +7,13 @@ class Source(MovingCameraScene):
     def construct(self):
         self.list_tex = [Tex(str(x)).shift(RIGHT*index/2) for (index, x) in enumerate(LIST)]
         self.play(*[Write(x) for x in self.list_tex])
+        self.low = Tex("L").shift(RIGHT * self.list_tex[1].get_x()).shift(DOWN * 1/2)
+        self.high = Tex("H").shift(RIGHT * self.list_tex[-1].get_x()).shift(DOWN * 1/2)
+        pivotStart = (self.list_tex[0].get_x())*RIGHT + (self.list_tex[0].get_y() + 3)*UP
+        pivotEnd = (self.list_tex[0].get_x())*RIGHT + (self.list_tex[0].get_y() + 1/2)*UP
+        self.pivot = Arrow(start=pivotStart, end=pivotEnd)
+        self.play(Write(self.pivot))
+        self.play(Write(self.low), Write(self.high))
         self.quickSort(LIST, 0, 9)
 
     def swap(self, low, high):
@@ -19,49 +27,73 @@ class Source(MovingCameraScene):
 
     def compare(self, a, b):
         self.play(Wiggle(self.list_tex[a], scale_value=2), Wiggle(self.list_tex[b], scale_value=2))
+
+    def setPivot(self, newIndex):
+        self.play(self.pivot.animate.shift(RIGHT * (self.list_tex[newIndex].get_x() - self.pivot.get_x())))
+
+    def addLock(self, index):
+        lock = Tex("\^").shift(RIGHT * (self.list_tex[index].get_x())).shift(DOWN)
+        self.play(Create(lock))
+
+    # def shiftLow(self, newIndex):
+    #     if newIndex >= len(self.list_tex):
+    #         return
+    #     self.play(self.low.animate.shift(RIGHT * (self.list_tex[newIndex].get_x() - self.low.get_x())))
+
+    # def shiftHigh(self, newIndex):
+    #     self.play(self.high.animate.shift(RIGHT * (self.list_tex[newIndex].get_x() - self.high.get_x())))
+
+    def shiftLimits(self, lowIndex, highIndex):
+        lowShift = 0 if lowIndex >= len(self.list_tex) else RIGHT * (self.list_tex[lowIndex].get_x() - self.low.get_x())
+        highShift = 0 if highIndex < 0 else RIGHT * (self.list_tex[highIndex].get_x() - self.high.get_x())
+        self.play(self.low.animate.shift(lowShift), self.high.animate.shift(highShift))
     
-    def partition(self, array, low, high):
+    def partition(self, array, start, end):
+        pivot = array[start]
+        self.setPivot(start)
+        low = start + 1
+        high = end
+        self.shiftLimits(low, high)
 
-        # Choose the rightmost element as pivot
-        pivot = array[high]
+        while True:
+            # If the current value we're looking at is larger than the pivot
+            # it's in the right place (right side of pivot) and we can move left,
+            # to the next element.
+            # We also need to make sure we haven't surpassed the low pointer, since that
+            # indicates we have already moved all the elements to their correct side of the pivot
+            while low <= high and array[high] >= pivot:
+                self.compare(high, low)
+                high = high - 1
+                self.shiftLimits(low, high)
 
-        # Pointer for greater element
-        i = low - 1
+            # Opposite process of the one above
+            while low <= high and array[low] <= pivot:
+                self.compare(low, high)
+                low = low + 1
+                self.shiftLimits(low, high)
 
-        # Traverse through all elements
-        # compare each element with pivot
-        for j in range(low, high):
-            self.compare(j, high)
-            if array[j] <= pivot:
+            # We either found a value for both high and low that is out of order
+            # or low is higher than high, in which case we exit the loop
+            if low <= high:
+                array[low], array[high] = array[high], array[low]
+                self.swap(low, high)
+                # The loop continues
+            else:
+                # We exit out of the loop
+                break
 
-                # If element smaller than pivot is found
-                # swap it with the greater element pointed by i
-                i = i + 1
+        array[start], array[high] = array[high], array[start]
+        self.swap(start, high)
 
-                # Swapping element at i with element at j
-                (array[i], array[j]) = (array[j], array[i])
-                self.swap(i, j)
-
-        # Swap the pivot element with
-        # the greater element specified by i
-        (array[i + 1], array[high]) = (array[high], array[i + 1])
-        self.swap(i + 1, high)
-
-        # Return the position from where partition is done
-        return i + 1
+        return high
 
 
     # Function to perform quicksort
-    def quickSort(self, array, low, high):
-        if low < high:
+    def quickSort(self, array, start, end):
+        if start >= end:
+            return
 
-            # Find pivot element such that
-            # element smaller than pivot are on the left
-            # element greater than pivot are on the right
-            pi = self.partition(array, low, high)
-
-            # Recursive call on the left of pivot
-            self.quickSort(array, low, pi - 1)
-
-            # Recursive call on the right of pivot
-            self.quickSort(array, pi + 1, high)
+        p = self.partition(array, start, end)
+        self.addLock(p)
+        self.quickSort(array, start, p-1)
+        self.quickSort(array, p+1, end)
