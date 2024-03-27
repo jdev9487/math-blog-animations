@@ -1,18 +1,21 @@
 from manim import *
 
 LIST = [3, 1, 7, 2, 10, 6, 5, 4, 9, 8]
+# LIST = [3, 1, 7]
 
 class Source(MovingCameraScene):
     def construct(self):
-        elements = [Element(Tex(str(x)).shift(RIGHT * index), x) for (index, x) in enumerate(LIST)]
+        elements = [Element(VGroup(Tex(str(x)).shift(RIGHT * index), Rectangle(height=1, width=1).shift(RIGHT * index)), x) for (index, x) in enumerate(LIST)]
         self.top = Circle(0.1, color=GREEN, fill_opacity=1)
         self.bottom = Circle(0.1, color=PINK, fill_opacity=1)
+        self.container = VGroup(*[x.display for x in elements], self.top, self.bottom)
+        self.play(self.camera.auto_zoom(self.container, margin=2))
         self.play(*[Write(x.display) for x in elements])
-        self.play(self.camera.frame.animate.move_to([5,-2,0]))
         self.wait()
         self.node = Node(elements, None, None, None, None, None)
         self.quick_sort(self.node)
         self.raise_objects()
+        self.wait(3)
 
     def quick_sort(self, node):
         if node is None: return
@@ -30,13 +33,20 @@ class Source(MovingCameraScene):
 
     def partition(self, elements):
         if elements is None or len(elements) == 0: return None, None, None
-        self.drop_objects(elements)
-        # acknowledge pivot
+        if len(elements) == 1:
+            self.drop_objects(elements)
+            self.highlight_pivot(elements[0])
+            return elements[0], None, None
+        if len(self.node.leftUnsorted) != len(elements):
+            self.drop_objects(elements)
         pivot = elements[-1]
+        self.highlight_pivot(pivot)
         i = -1
         if len(elements) > 1:
             self.initialise_markers(elements[0].display.get_y(), elements[0].display.get_x())
         for j in range(len(elements)):
+            # highlight comparison of jth element with pivot
+            self.compare_with_pivot(elements[j], pivot)
             if elements[j].value <= pivot.value:
                 i = i + 1
                 if len(elements) > 1:
@@ -50,6 +60,16 @@ class Source(MovingCameraScene):
                 else: 
                     self.increment_top_marker()
         return elements[i], elements[:i], elements[i + 1:]
+
+    def compare_with_pivot(self, compare, pivot):
+        comparator = ">" if compare.value > pivot.value else "<"
+        self.comparison = MathTex(comparator+str(pivot.value)).scale(0.5).next_to(compare.display, (DOWN + RIGHT)).shift((LEFT + UP)*0.7).shift(DOWN * 0.2)
+        self.play(FadeIn(self.comparison), run_time = 0.2)
+        self.wait(0.5)
+        self.play(FadeOut(self.comparison), run_time = 0.2)
+
+    def highlight_pivot(self, pivotElement):
+        self.play(pivotElement.display.animate.set_color(BLUE))
 
     def fade_out_markers(self):
         self.play(FadeOut(self.top, self.bottom))
@@ -70,20 +90,20 @@ class Source(MovingCameraScene):
         self.bottom.shift(bottom_destination_x_shift + bottom_destination_y_shift)
         self.play(FadeIn(self.top, self.bottom))
 
-        # self.play(self.top.animate.shift(top_destination_x_shift + top_destination_y_shift),
-        #           self.bottom.animate.shift(bottom_destination_x_shift + bottom_destination_y_shift))
-    
     def swap_objects(self, first_element, second_element, first_index, second_index):
+        # make paths more "loopy"
         self.play(first_element.display.animate.shift(RIGHT * (second_index - first_index)),
                   second_element.display.animate.shift(RIGHT * (first_index - second_index)))
         self.wait()
     
     def drop_objects(self, elements):
         self.play(*[x.display.animate.shift(DOWN) for x in elements])
-        self.wait(2)
+        self.play(self.camera.auto_zoom(self.container, margin=2))
+        self.wait()
 
     def raise_objects(self):
-        self.play(*[x.display.animate.shift(DOWN * (x.display.get_y())) for x in self.node.leftUnsorted])
+        self.play(*[x.display.animate.shift(DOWN * (x.display.get_y())) for x in self.node.leftUnsorted],
+                  self.camera.frame.animate.move_to([len(LIST)/2 - 1/2, 0, 0]))
 
         
 class Element():
