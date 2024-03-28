@@ -6,11 +6,9 @@ LIST = [3, 1, 7, 2, 10, 6, 5, 4, 9, 8]
 
 class Source(MovingCameraScene):
     def construct(self):
-        # y = mp.list_fonts()
-        # x = list(filter(lambda font: 'mono' in font.lower() or 'ms' in font.lower(), mp.list_fonts()))
-        elements = [Element(VGroup(Tex(str(x)).shift(RIGHT * index), Rectangle(height=1, width=1).shift(RIGHT * index)), x) for (index, x) in enumerate(LIST)]
-        self.top = Circle(0.1, color=GREEN, fill_opacity=1)
-        self.bottom = Circle(0.1, color=PINK, fill_opacity=1)
+        elements = [Element(VGroup(Tex(str(x)).shift(RIGHT * index), Rectangle(height=1, width=1).shift(RIGHT * index)).set_color(YELLOW_D), x) for (index, x) in enumerate(LIST)]
+        self.top = Dot(radius=0.1, color=GREEN_E)
+        self.bottom = Dot(radius=0.1, color=PURPLE_E)
         self.container = VGroup(*[x.display for x in elements], self.top, self.bottom)
         self.play(self.camera.auto_zoom(self.container, margin=2))
         self.play(*[Write(x.display) for x in elements])
@@ -41,7 +39,7 @@ class Source(MovingCameraScene):
         if elements is None or len(elements) == 0: return None, None, None
         if len(elements) == 1:
             self.drop_objects(elements)
-            self.highlight_pivot(elements[0])
+            self.lock(elements[0])
             return elements[0], None, None
         if len(self.node.leftUnsorted) != len(elements):
             self.drop_objects(elements)
@@ -63,9 +61,14 @@ class Source(MovingCameraScene):
             if len(elements) > 1:
                 if j == len(elements) - 1:
                     self.fade_out_markers()
-                else: 
+                else:
                     self.increment_top_marker()
+        self.lock(elements[i])
         return elements[i], elements[:i], elements[i + 1:]
+
+    def lock(self, element):
+        element.display.set_color(RED).set_z_index(100)
+        self.wait()
 
     def show_recursive_processes(self, elements):
         if len(elements) <= 1: return
