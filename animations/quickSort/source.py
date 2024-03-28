@@ -1,10 +1,13 @@
 from manim import *
+import manimpango as mp
 
 LIST = [3, 1, 7, 2, 10, 6, 5, 4, 9, 8]
 # LIST = [3, 1, 4, 2]
 
 class Source(MovingCameraScene):
     def construct(self):
+        # y = mp.list_fonts()
+        # x = list(filter(lambda font: 'mono' in font.lower() or 'ms' in font.lower(), mp.list_fonts()))
         elements = [Element(VGroup(Tex(str(x)).shift(RIGHT * index), Rectangle(height=1, width=1).shift(RIGHT * index)), x) for (index, x) in enumerate(LIST)]
         self.top = Circle(0.1, color=GREEN, fill_opacity=1)
         self.bottom = Circle(0.1, color=PINK, fill_opacity=1)
@@ -65,9 +68,19 @@ class Source(MovingCameraScene):
         return elements[i], elements[:i], elements[i + 1:]
 
     def show_recursive_processes(self, elements):
+        if len(elements) <= 1: return
         group = VGroup(*[x.display for x in elements])
         brace = Brace(group, sharpness=1, direction=UP)
-        self.play(Create(brace))
+        description = Text("quicksort()", font="Monospace").next_to(brace, UP).scale(0.7).shift(DOWN*0.3)
+        if description.width > 0.8 * brace.width:
+            description = description.scale(0.8/(description.width/brace.width))
+        self.brace_group = VGroup(brace, description)
+        if (self.camera.frame_center[0] + self.camera.frame_height/2) > (self.brace_group.get_x() + self.brace_group.height/2):
+            self.play(Write(self.brace_group))
+        else:
+            self.play(Write(self.brace_group), self.camera.auto_zoom([self.container, self.brace_group], margin=2))
+        self.wait()
+        self.play(FadeOut(self.brace_group))
 
     def compare_with_pivot(self, compare, pivot):
         comparator = ">" if compare.value > pivot.value else "<" if compare.value < pivot.value else "<="
@@ -140,3 +153,6 @@ class Node():
             return 0
         else:
             return 1 + self.parent.get_depth()
+
+s = Source()
+s.construct()
