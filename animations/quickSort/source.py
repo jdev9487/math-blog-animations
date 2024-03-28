@@ -19,14 +19,17 @@ class Source(MovingCameraScene):
 
     def quick_sort(self, node):
         if node is None: return
+
+        if node.leftUnsorted and len(node.leftUnsorted) != 0 and node.get_depth() != 0: self.show_recursive_processes(node.leftUnsorted)
         leftPivot, leftLeftUnsorted, leftRightUnsorted = self.partition(node.leftUnsorted)
         node.leftPivot = Node(leftLeftUnsorted, leftRightUnsorted, None, None, node, leftPivot)
-        rightPivot, rightLeftUnsorted, rightRightUnsorted = self.partition(node.rightUnsorted)
-        node.rightPivot = Node(rightLeftUnsorted, rightRightUnsorted, None, None, node, rightPivot)
-
         if ((leftLeftUnsorted and len(leftLeftUnsorted) != 0) or
             (leftRightUnsorted and len(leftRightUnsorted) != 0)):
             self.quick_sort(node.leftPivot)
+
+        if node.rightUnsorted and len(node.rightUnsorted) != 0 and node.get_depth() != 0: self.show_recursive_processes(node.rightUnsorted)
+        rightPivot, rightLeftUnsorted, rightRightUnsorted = self.partition(node.rightUnsorted)
+        node.rightPivot = Node(rightLeftUnsorted, rightRightUnsorted, None, None, node, rightPivot)
         if ((rightLeftUnsorted and len(rightLeftUnsorted) != 0) or
             (rightRightUnsorted and len(rightRightUnsorted) != 0)):
             self.quick_sort(node.rightPivot)
@@ -61,8 +64,13 @@ class Source(MovingCameraScene):
                     self.increment_top_marker()
         return elements[i], elements[:i], elements[i + 1:]
 
+    def show_recursive_processes(self, elements):
+        group = VGroup(*[x.display for x in elements])
+        brace = Brace(group, sharpness=1, direction=UP)
+        self.play(Create(brace))
+
     def compare_with_pivot(self, compare, pivot):
-        comparator = ">" if compare.value > pivot.value else "<"
+        comparator = ">" if compare.value > pivot.value else "<" if compare.value < pivot.value else "<="
         self.comparison = MathTex(comparator+str(pivot.value)).scale(0.5).next_to(compare.display, (DOWN + RIGHT)).shift((LEFT + UP)*0.7).shift(DOWN * 0.2)
         self.play(FadeIn(self.comparison), run_time = 0.2)
         self.wait(0.5)
@@ -131,4 +139,4 @@ class Node():
         if self.parent is None:
             return 0
         else:
-            return 1 + self.get_depth(self.parent)
+            return 1 + self.parent.get_depth()
