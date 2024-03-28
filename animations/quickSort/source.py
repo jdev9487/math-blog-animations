@@ -1,7 +1,7 @@
 from manim import *
 
 LIST = [3, 1, 7, 2, 10, 6, 5, 4, 9, 8]
-# LIST = [3, 1, 7]
+# LIST = [3, 1, 4, 2]
 
 class Source(MovingCameraScene):
     def construct(self):
@@ -91,10 +91,17 @@ class Source(MovingCameraScene):
         self.play(FadeIn(self.top, self.bottom))
 
     def swap_objects(self, first_element, second_element, first_index, second_index):
-        # make paths more "loopy"
-        self.play(first_element.display.animate.shift(RIGHT * (second_index - first_index)),
-                  second_element.display.animate.shift(RIGHT * (first_index - second_index)))
-        self.wait()
+        path_arc = -1.5
+        left_element, right_element = (first_element, second_element) \
+            if first_index <= second_index \
+            else (second_element, first_element)
+        y = first_element.display.get_y()
+        left_x = left_element.display.get_x()
+        right_x = right_element.display.get_x()
+        top_path = Line((UP * y) + (RIGHT * left_x), (UP * y) + (RIGHT * right_x), path_arc=path_arc)
+        bottom_path = Line((UP * y) + (RIGHT * right_x), (UP * y) + (RIGHT * left_x), path_arc=path_arc)
+        self.play(MoveAlongPath(left_element.display, top_path), MoveAlongPath(right_element.display, bottom_path))
+        self.wait(0.5)
     
     def drop_objects(self, elements):
         self.play(*[x.display.animate.shift(DOWN) for x in elements])
@@ -125,6 +132,3 @@ class Node():
             return 0
         else:
             return 1 + self.get_depth(self.parent)
-
-s = Source()
-s.construct()
