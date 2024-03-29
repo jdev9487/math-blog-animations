@@ -6,10 +6,17 @@ LIST = [3, 1, 7, 2, 10, 6, 5, 4, 9, 8]
 
 class Source(MovingCameraScene):
     def construct(self):
+        pivot = VGroup(Rectangle(height=2, width=2), Tex("pivot")).set_color(BLUE)
+        sorted = VGroup(Rectangle(height=2, width=2), Tex("sorted")).set_color(RED).next_to(pivot, RIGHT)
+        key = VGroup(pivot, sorted).scale_to_fit_width(self.camera.frame.width * 0.2)
         elements = [Element(VGroup(Tex(str(x)).shift(RIGHT * index), Rectangle(height=1, width=1).shift(RIGHT * index)).set_color(YELLOW_D), x) for (index, x) in enumerate(LIST)]
         self.top = Dot(radius=0.1, color=GREEN_E)
         self.bottom = Dot(radius=0.1, color=PURPLE_E)
         self.container = VGroup(*[x.display for x in elements], self.top, self.bottom)
+        self.wait()
+        self.play(FadeIn(key))
+        self.play(key.animate.align_to(self.camera.frame, UP + LEFT))
+        key.add_updater(self.lock_to_frame)
         self.play(self.camera.auto_zoom(self.container, margin=2))
         self.play(*[Write(x.display) for x in elements])
         self.wait()
@@ -17,6 +24,10 @@ class Source(MovingCameraScene):
         self.quick_sort(self.node)
         self.raise_objects()
         self.wait(3)
+
+    def lock_to_frame(self, mob):
+        mob.scale_to_fit_width(self.camera.frame.width * 0.2)
+        mob.align_to(self.camera.frame, UP).align_to(self.camera.frame, LEFT)
 
     def quick_sort(self, node):
         if node is None: return
