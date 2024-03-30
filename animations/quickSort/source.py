@@ -1,26 +1,24 @@
 from manim import *
 
 LIST = [3, 1, 6, 2, 9, 5, 4, 8, 7]
-# LIST = [3, 1, 4, 2]
-# LIST = [1, 2]
 
 class Source(MovingCameraScene):
     def construct(self):
-        key = Tex("unsorted\\\\", "pivot\\\\", "sorted").scale_to_fit_width(self.camera.frame.width * 0.1)
-        key[0].set_color(YELLOW_D)
-        key[1].set_color(BLUE)
-        key[2].set_color(RED)
-        key.align_to(self.camera.frame, UP + LEFT).shift((DOWN + RIGHT) * self.camera.frame.height * 0.1)
         elements = [Element(VGroup(Tex(str(x)).shift(RIGHT * index), Rectangle(height=1, width=1).shift(RIGHT * index)).set_color(YELLOW_D), x) for (index, x) in enumerate(LIST)]
         self.top = Dot(radius=0.1, color=GREEN_E)
         self.bottom = Dot(radius=0.1, color=PURPLE_E)
         self.container = VGroup(*[x.display for x in elements], self.top, self.bottom)
         self.wait()
-        self.play(FadeIn(key))
-        key.add_updater(self.lock_to_frame)
         self.play(self.camera.auto_zoom(self.container, margin=2))
         self.play(*[Write(x.display) for x in elements])
         self.wait()
+        key = Tex("unsorted\\\\", "pivot\\\\", "sorted").scale_to_fit_width(self.camera.frame.width * 0.1)
+        key[0].set_color(YELLOW_D)
+        key[1].set_color(BLUE)
+        key[2].set_color(RED)
+        key.align_to(self.camera.frame, UP + LEFT).shift((DOWN + RIGHT) * self.camera.frame.height * 0.1)
+        self.play(FadeIn(key))
+        key.add_updater(self.lock_to_frame)
         self.node = Node(elements, None, None, None, None, None)
         self.quick_sort(self.node)
         self.raise_objects()
@@ -61,8 +59,6 @@ class Source(MovingCameraScene):
         if len(elements) > 1:
             self.initialise_markers(elements[0].display.get_y(), elements[0].display.get_x())
         for j in range(len(elements)):
-            # highlight comparison of jth element with pivot
-            self.compare_with_pivot(elements[j], pivot)
             if elements[j].value <= pivot.value:
                 i = i + 1
                 if len(elements) > 1:
@@ -96,13 +92,6 @@ class Source(MovingCameraScene):
             self.play(Write(self.brace_group), self.camera.auto_zoom([self.container, self.brace_group], margin=2))
         self.wait()
         self.play(FadeOut(self.brace_group))
-
-    def compare_with_pivot(self, compare, pivot):
-        comparator = ">" if compare.value > pivot.value else "<" if compare.value < pivot.value else "<="
-        self.comparison = MathTex(comparator+str(pivot.value)).scale(0.5).next_to(compare.display, (DOWN + RIGHT)).shift((LEFT + UP)*0.7).shift(DOWN * 0.2)
-        self.play(FadeIn(self.comparison), run_time = 0.2)
-        self.wait(0.5)
-        self.play(FadeOut(self.comparison), run_time = 0.2)
 
     def highlight_pivot(self, pivotElement):
         self.play(pivotElement.display.animate.set_color(BLUE))
@@ -168,6 +157,3 @@ class Node():
             return 0
         else:
             return 1 + self.parent.get_depth()
-
-s = Source()
-s.construct()
