@@ -5,14 +5,27 @@ class Source(MovingCameraScene):
     def construct(self):
         self.construct_conversion_legend()
         self.wait()
-        self.play(Wiggle(self.legend[4]))
+        self.construct_initial_equation()
         # first = MathTex("0.414", "=", "{a_1", r"\over", "16", "^1}", "+", "{a_2", r"\over", "16", "^2}", "+", "{a_3", r"\over", "16", "^3}")
         # second = MathTex("6.627", "=", "{a_1", r"\over", "16", "^0}", "+", "{a_2", r"\over", "16", "^1}", "+", "{a_3", r"\over", "16", "^2}")
         # self.add(first)
         # self.wait(1)
         # # self.play(*[Transform(first[i], second[i]) for i in range(len(first))])
         # self.play(Transform(first, second))
-        # self.wait(1)
+        self.wait()
+
+    def construct_initial_equation(self):
+        sqrt2 = str(np.sqrt(2))[:8]
+        sqrt2_minus_1 = str(np.sqrt(2) - 1)[:8]
+        pre1 = MathTex(r"\sqrt{2}", "", "=", sqrt2, r"\hdots").align_to(self.camera.frame, UP).shift(DOWN * 2)
+        self.play(Write(pre1))
+        pre2 = MathTex(r"\sqrt{2}", "-1", "=", sqrt2_minus_1, r"\hdots").align_to(self.camera.frame, UP).shift(DOWN * 2)
+        self.play(Transform(pre1, pre2))
+        self.wait()
+        initial = MathTex(sqrt2_minus_1, r"\hdots", "=", "{a_1", r"\over", "16", "^1}", "+", "{a_2", r"\over", "16", "^2}", "+", "{a_3", r"\over", "16", "^3}", r"\hdots")
+        self.play(pre2[3].animate.shift(UP * (initial[0].get_y() - pre2[3].get_y())).shift(RIGHT * (initial[0].get_x() - pre2[3].get_x())),
+                  pre2[4].animate.shift(UP * (initial[1].get_y() - pre2[4].get_y())).shift(RIGHT * (initial[1].get_x() - pre2[4].get_x())))
+        self.play(FadeIn(initial[1:]))
 
     def construct_conversion_legend(self):
         self.legend = create_legend()
