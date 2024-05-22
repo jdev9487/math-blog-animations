@@ -1,6 +1,7 @@
 # video build files
 *.gif
 media
+output
 
 .DS_Store
 

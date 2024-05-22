@@ -7,5 +7,10 @@ CORS(app)
 
 @app.get("/animations/<slug>")
 def animation(slug):
-    filename = f'animations/{slug}/media/videos/source/2160p60/Source.mp4'
+    filename = f'output/{slug}.mp4'
     return send_file(filename, mimetype='image/mp4')
+
+@app.get("/thumbnails/<slug>")
+def thumbnail(slug):
+    filename = f'output/{slug}.png'
+    return send_file(filename, mimetype='image/png')
