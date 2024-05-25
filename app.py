@@ -14,3 +14,6 @@ def animation(slug):
 def thumbnail(slug):
     filename = f'output/{slug}.png'
     return send_file(filename, mimetype='image/png')
+
+if __name__ == "__main__":
+    app.run()
