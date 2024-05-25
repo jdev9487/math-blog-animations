@@ -34,5 +34,5 @@ jobs:
         with:
           context: .
           push: true
-          build-args: quality=l
+          build-args: QUALITY=l
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/math-blog-animations:latest
