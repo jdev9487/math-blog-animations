@@ -13,7 +13,7 @@ jobs:
       contents: write
     steps:
       - name: Test
-        run: echo ${GITHUB_REF#refs/*/}
+        run: echo ${GITHUB_REF#refs/*/v}
       -
         name: Checkout
         uses: 
