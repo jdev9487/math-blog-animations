@@ -12,6 +12,8 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: Test
+        run: echo ${GITHUB_REF#refs/*/}
       -
         name: Checkout
         uses: 
