@@ -12,12 +12,14 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Set release variable
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/v}" >> $GITHUB_ENV
       -
         name: Checkout
         uses: 
           actions/checkout@v4
+      - 
+        name: Read version file
+        id: dotenv
+        uses: falti/dotenv-action@v1.1.4
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -37,4 +39,4 @@ jobs:
           context: .
           push: true
           build-args: QUALITY=k
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/math-blog-animations:${{ env.RELEASE_VERSION }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/math-blog-animations:${{ steps.dotenv.outputs.version }}
