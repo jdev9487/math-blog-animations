@@ -1,8 +1,9 @@
 name: Build videos from Python
 
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - main
 
 jobs:
   build:
