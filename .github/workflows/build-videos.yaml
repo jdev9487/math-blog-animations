@@ -39,5 +39,5 @@ jobs:
         with:
           context: .
           push: true
-          build-args: QUALITY=k
+          build-args: QUALITY=l
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/math-blog-animations:${{ steps.dotenv.outputs.version }}
