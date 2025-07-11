@@ -21,85 +21,85 @@ class Source(MovingCameraScene):
         final = createFinalEquations()
         self.play(Write(initial_equation))
         self.wait()
-        self.play(Transform(initial_equation, altered_initial_equation, replace_mobject_with_target_in_scene=True))
-        self.wait()
-        self.play(Create(x_squared), Write(x_squared_length_text_1), Write(x_squared_length_text_2))
-        self.wait()
-        self.play(Write(x_squared_area_text))
-        self.play(Wiggle(x_squared_area_text, scale_value=1.4), Wiggle(altered_initial_equation[0], scale_value=1.4))
-        self.wait()
-        self.play(Create(rect_initial), Write(rect_initial_width_text))
-        self.wait()
-        self.play(Write(rect_initial_area_text))
-        self.play(Wiggle(rect_initial_area_text, scale_value=1.4), Wiggle(altered_initial_equation[2], scale_value=1.4))
-        self.wait()
-        self.play(Create(c), Write(c_area_text))
-        self.play(Wiggle(c_area_text, scale_value=1.4), Wiggle(altered_initial_equation[4], scale_value=1.4))
-        self.wait(3)
-        self.play(Unwrite(altered_initial_equation), self.camera.frame.animate.move_to([X_SQUARED_LENGTH/2, X_SQUARED_LENGTH/2, 0]))
-        self.wait()
-        self.play(Uncreate(rect_initial),
-                  Unwrite(rect_initial_width_text),
-                  Unwrite(rect_initial_area_text),
-                  Create(rect1),
-                  Create(rect2),
-                  Write(rect_width_text_1),
-                  Write(rect_width_text_2))
-        self.wait()
-        self.play(Write(rect_area_text_1), Write(rect_area_text_2))
-        self.wait()
-        self.play(Rotate(rect1, angle=PI/2, about_point=ORIGIN),
-                  rect2.animate.shift(LEFT * (GAP + RECT_WIDTH)),
-                  rect_width_text_1.animate.shift((LEFT + UP)*(2 + GAP + RECT_WIDTH/2 + TEXT_BUFFER)),
-                  rect_width_text_2.animate.shift(LEFT * (GAP + RECT_WIDTH)),
-                  rect_area_text_1.animate.shift((LEFT + UP) * (1 + GAP + RECT_WIDTH/2)),
-                  rect_area_text_2.animate.shift(LEFT * (GAP + RECT_WIDTH)))
-        self.wait(3)
-        self.play(GrowFromPoint(completer, [C_X-C_WIDTH/2, C_Y-C_WIDTH/2, 0]),
-                  Transform(c, adjusted, replace_mobject_with_target_in_scene=True),
-                  Transform(c_area_text, adjusted_c_area_text, replace_mobject_with_target_in_scene=True),
-                  Write(completer_area_text))
-        self.wait(4)
-        self.play(Create(completed),
-                  FadeOut(x_squared),
-                  FadeOut(x_squared_area_text),
-                  FadeOut(rect1),
-                  FadeOut(rect2),
-                  FadeOut(rect_area_text_1),
-                  FadeOut(rect_area_text_2),
-                  FadeOut(completer),
-                  FadeOut(completer_area_text)
-                  )
-        self.play(
-                  Unwrite(x_squared_length_text_1),
-                  Unwrite(x_squared_length_text_2),
-                  Unwrite(rect_width_text_1),
-                  Unwrite(rect_width_text_2)
-                  )
-        self.play(Write(completed_length_text_1), Write(completed_length_text_2))
-        self.wait()
-        self.play(Write(completed_area_text), Unwrite(completed_length_text_1), Unwrite(completed_length_text_2))
-        self.wait(4)
-        self.play(Uncreate(adjusted),
-                  Uncreate(completed),
-                  Uncreate(completed_length_text_1),
-                  Uncreate(completed_length_text_2))
-        self.wait()
-        self.play(completed_area_text.animate
-                  .shift(RIGHT*(final[0][0].get_x() - completed_area_text.get_x()))
-                  .shift(UP*(final[0][0].get_y() - completed_area_text.get_y())),
-                  adjusted_c_area_text.animate
-                  .shift(RIGHT*(final[0][2].get_x() - adjusted_c_area_text.get_x()))
-                  .shift(UP*(final[0][2].get_y() - adjusted_c_area_text.get_y())),
-                  self.camera.frame.animate.move_to(final[0]))
-        self.play(Write(final[0][1]), Write(final[0][3]))
-        self.wait()
-        self.play(Write(final[1]),
-                  self.camera.frame.animate.move_to(final[1]))
-        self.wait()
-        self.play(Write(final[2]),
-                  self.camera.frame.animate.move_to(final[2]))
-        self.wait(3)
+        # self.play(Transform(initial_equation, altered_initial_equation, replace_mobject_with_target_in_scene=True))
+        # self.wait()
+        # self.play(Create(x_squared), Write(x_squared_length_text_1), Write(x_squared_length_text_2))
+        # self.wait()
+        # self.play(Write(x_squared_area_text))
+        # self.play(Wiggle(x_squared_area_text, scale_value=1.4), Wiggle(altered_initial_equation[0], scale_value=1.4))
+        # self.wait()
+        # self.play(Create(rect_initial), Write(rect_initial_width_text))
+        # self.wait()
+        # self.play(Write(rect_initial_area_text))
+        # self.play(Wiggle(rect_initial_area_text, scale_value=1.4), Wiggle(altered_initial_equation[2], scale_value=1.4))
+        # self.wait()
+        # self.play(Create(c), Write(c_area_text))
+        # self.play(Wiggle(c_area_text, scale_value=1.4), Wiggle(altered_initial_equation[4], scale_value=1.4))
+        # self.wait(3)
+        # self.play(Unwrite(altered_initial_equation), self.camera.frame.animate.move_to([X_SQUARED_LENGTH/2, X_SQUARED_LENGTH/2, 0]))
+        # self.wait()
+        # self.play(Uncreate(rect_initial),
+        #           Unwrite(rect_initial_width_text),
+        #           Unwrite(rect_initial_area_text),
+        #           Create(rect1),
+        #           Create(rect2),
+        #           Write(rect_width_text_1),
+        #           Write(rect_width_text_2))
+        # self.wait()
+        # self.play(Write(rect_area_text_1), Write(rect_area_text_2))
+        # self.wait()
+        # self.play(Rotate(rect1, angle=PI/2, about_point=ORIGIN),
+        #           rect2.animate.shift(LEFT * (GAP + RECT_WIDTH)),
+        #           rect_width_text_1.animate.shift((LEFT + UP)*(2 + GAP + RECT_WIDTH/2 + TEXT_BUFFER)),
+        #           rect_width_text_2.animate.shift(LEFT * (GAP + RECT_WIDTH)),
+        #           rect_area_text_1.animate.shift((LEFT + UP) * (1 + GAP + RECT_WIDTH/2)),
+        #           rect_area_text_2.animate.shift(LEFT * (GAP + RECT_WIDTH)))
+        # self.wait(3)
+        # self.play(GrowFromPoint(completer, [C_X-C_WIDTH/2, C_Y-C_WIDTH/2, 0]),
+        #           Transform(c, adjusted, replace_mobject_with_target_in_scene=True),
+        #           Transform(c_area_text, adjusted_c_area_text, replace_mobject_with_target_in_scene=True),
+        #           Write(completer_area_text))
+        # self.wait(4)
+        # self.play(Create(completed),
+        #           FadeOut(x_squared),
+        #           FadeOut(x_squared_area_text),
+        #           FadeOut(rect1),
+        #           FadeOut(rect2),
+        #           FadeOut(rect_area_text_1),
+        #           FadeOut(rect_area_text_2),
+        #           FadeOut(completer),
+        #           FadeOut(completer_area_text)
+        #           )
+        # self.play(
+        #           Unwrite(x_squared_length_text_1),
+        #           Unwrite(x_squared_length_text_2),
+        #           Unwrite(rect_width_text_1),
+        #           Unwrite(rect_width_text_2)
+        #           )
+        # self.play(Write(completed_length_text_1), Write(completed_length_text_2))
+        # self.wait()
+        # self.play(Write(completed_area_text), Unwrite(completed_length_text_1), Unwrite(completed_length_text_2))
+        # self.wait(4)
+        # self.play(Uncreate(adjusted),
+        #           Uncreate(completed),
+        #           Uncreate(completed_length_text_1),
+        #           Uncreate(completed_length_text_2))
+        # self.wait()
+        # self.play(completed_area_text.animate
+        #           .shift(RIGHT*(final[0][0].get_x() - completed_area_text.get_x()))
+        #           .shift(UP*(final[0][0].get_y() - completed_area_text.get_y())),
+        #           adjusted_c_area_text.animate
+        #           .shift(RIGHT*(final[0][2].get_x() - adjusted_c_area_text.get_x()))
+        #           .shift(UP*(final[0][2].get_y() - adjusted_c_area_text.get_y())),
+        #           self.camera.frame.animate.move_to(final[0]))
+        # self.play(Write(final[0][1]), Write(final[0][3]))
+        # self.wait()
+        # self.play(Write(final[1]),
+        #           self.camera.frame.animate.move_to(final[1]))
+        # self.wait()
+        # self.play(Write(final[2]),
+        #           self.camera.frame.animate.move_to(final[2]))
+        # self.wait(3)
     
 def createXSquaredObjects():
     return (
